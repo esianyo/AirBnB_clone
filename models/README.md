@@ -1,0 +1,1 @@
+Contains all models for the AirBnB clone project.
