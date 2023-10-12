@@ -46,3 +46,15 @@ class BaseModel:
                 toDict[key] = val
         return toDict
 
+    def __init__(self, **kwargs):
+        if kwargs:
+            del kwargs["__class__"]
+            for key, val in kwargs.items():
+                setattr(self, key, val)
+
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.now()
+
+    def __str__(self):
+        return "\n".join([f"{key}: {val}" for key, val in self.__dict__.items()])
