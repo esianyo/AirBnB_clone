@@ -12,7 +12,7 @@ from uuid import uuid4
 
 class BaseModel:
     """
-    Base Model class contains all public instance attributes that will be accessed by other methods. 
+    contains all public instance attributes that will be access by all methods.
     """
 
     def __init__(self):
@@ -51,9 +51,9 @@ class BaseModel:
             del kwargs["__class__"]
             for key, val in kwargs.items():
                 if key == "created_at" or key == "updated_at":
-                    datetime_obj = datetime.strptime(val, "%Y-%m-%dT%H:%M:%S.%f")
-                    setattr(self, key, datetime_obj)
-                
+                    dtm_obj = datetime.strptime(val, "%Y-%m-%dT%H:%M:%S.%f")
+                    setattr(self, key, dtm_obj)
+
                 else:
                     setattr(self, key, val)
 
@@ -63,4 +63,4 @@ class BaseModel:
             self.updated_at = datetime.now()
 
     def __str__(self):
-        return "\n".join([f"{key}: {val}" for key, val in self.__dict__.items()])
+        return "\n".join(f"{key}: {val}" for key, val in self.__dict__.items())
