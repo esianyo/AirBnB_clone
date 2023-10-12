@@ -50,11 +50,17 @@ class BaseModel:
         if kwargs:
             del kwargs["__class__"]
             for key, val in kwargs.items():
-                setattr(self, key, val)
+                if key == "created_at" or key == "updated_at":
+                    datetime_obj = datetime.strptime(val, "%Y-%m-%dT%H:%M:%S.%f")
+                    setattr(self, key, datetime_obj)
+                
+                else:
+                    setattr(self, key, val)
 
         else:
             self.id = str(uuid4())
             self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def __str__(self):
         return "\n".join([f"{key}: {val}" for key, val in self.__dict__.items()])
