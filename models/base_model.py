@@ -3,6 +3,8 @@
 
 from datetime import datetime
 from uuid import uuid4
+from models import storage
+
 """Contains all common modules for the AirBnB clone project
 
     Returns:

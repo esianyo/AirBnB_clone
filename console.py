@@ -1,7 +1,21 @@
 #!/usr/bin/python3
 """program that contains the entry point of the command interpreter"""
 
+
 import cmd
+import sys
+from models.base_model import BaseModel
+from models import storage
+import json
+from models.city import City
+from models.place import Place
+from models.state import State
+from models.amenity import Amenity
+from models.review import Review
+from models.user import User
+
+classes = {'BaseModel': BaseModel, 'User': User, 'Place': Place,
+           'State': State, 'City': City, 'Amenity': Amenity, 'Review': Review}
 
 
 class HBNBCommand(cmd.Cmd):
@@ -52,7 +66,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             for key, val in storage.all().items():
-                if args[1] == val.id:
+                if command[1] == val.id:
                     print(val)
                     return;
             print("** no instance found **")
@@ -75,21 +89,58 @@ class HBNBCommand(cmd.Cmd):
                     return""
             print("[]")
 
-        def Update(self, command):
-            """Updates an instance based on the class name and id"""
-            command = command.split()
-            if command is None:
-                print("** class name missing **")
-                return""
-            elif len(command) < 2:
-                print("** class doesn't exist **")
-                return""
-            elif len(command) < 3:
-                print("** attribute name missing **")
-                return""
-            elif len(command) < 4:
-                print("** value missing **")
-                return""
+    def Update(self, command):
+        """Updates an instance based on the class name and id"""
+        command = command.split()
+        if command is None:
+            print("** class name missing **")
+            return""
+        elif len(command) < 2:
+            print("** class doesn't exist **")
+            return""
+        elif len(command) < 3:
+            print("** attribute name missing **")
+            return""
+        elif len(command) < 4:
+            print("** value missing **")
+            return""
             
-            
+        if command[0] not in classes:
+            print("** class doesn't exist **")
+            return""
+        for key, val in storage.all().items():
+            if command[1] == val.id:
+                command[3] = command[3].strip('"')
+                try:
+                    command[3] = int(command[3])
+                except:
+                    pass
+                setattr(val, command[2], command[3])
+                storage.save()
+                return""
+            print("** no instance found **")
+
+    def Destroy(self, command):
+        """ destroys instances for class name and id """
+        command = command.split()
+        if command is None:
+            print("** class name missing **")
+            return""
+        elif len(command) < 2:
+            print("** instance id missing **")
+            return""
+        if command[0] not in classes:
+            print("** class doesn't exist **")
+            return""
+        for key, val in storage.all().items():
+            if command[1] == val.id:
+                del storage.all()[k]
+                storage.save()
+                return""
+        print("** no instance found **")
+
+if __name__ == '__main__':
+    HBNBCommand().cmdloop()        
+
+    
         

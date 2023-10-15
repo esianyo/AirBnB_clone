@@ -42,8 +42,11 @@ def reload(self):
     """deserialises json string to dict string"""
     objDict = None
     try:
+        with open(FileStorage.__file_path, "r", encoding="utf-8") as fd:
+            objDict = json.load(fd)
         for key, val in FileStorage.__objects.items():
-            with open(FileStorage.__file_path, "r", encoding="utf-8") as fd:
-                objDict = json.load(fd)
+            class_name = val["__class__"]
+            class_name = models.classes[class_name]
+            FileStorage.__objects[key] = class_name(**val)            
     except FileNotFoundError:
         pass
