@@ -3,7 +3,7 @@
 
 from datetime import datetime
 from uuid import uuid4
-from models import storage
+import models
 
 """Contains all common modules for the AirBnB clone project
 
@@ -22,8 +22,9 @@ class BaseModel:
         self.id = str(uuid4())
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
+        models.storage.new(self)
 
-    def __str__(self) -> str:
+    def __str__(self):
         """string representation of name and id values
 
         Returns:
