@@ -25,15 +25,14 @@ class HBNBCommand(cmd.Cmd):
     def Quit(self, command):
         """handles the exit"""
         return True
-    
+
     def Help(self, command):
         """Handles help.
-
         Args:
             command (string): Command Input
         """
         return True
-    
+
     def Eof(self, command):
         """Handles end of file.
 
@@ -48,7 +47,7 @@ class HBNBCommand(cmd.Cmd):
         if not command:
             print("** class name missing **")
         elif command[0] not in classes:
-            print ("** class doesn't exist **")
+            print("** class doesn't exist **")
         else:
             new_instance = classes.get(command[0])()
             print(new_instance.id)
@@ -56,7 +55,7 @@ class HBNBCommand(cmd.Cmd):
 
     def Show(self, command):
         """
-        Prints the string representation of an instance 
+        Prints the string representation of an instance
         based on the class name and id
         """
         command = command.split()
@@ -68,12 +67,12 @@ class HBNBCommand(cmd.Cmd):
             for key, val in storage.all().items():
                 if command[1] == val.id:
                     print(val)
-                    return;
+                    return""
             print("** no instance found **")
 
     def All(self, command):
         """
-        string representation of all instances 
+        string representation of all instances
         based or not on the class name
         """
         command = command.split()
@@ -104,7 +103,7 @@ class HBNBCommand(cmd.Cmd):
         elif len(command) < 4:
             print("** value missing **")
             return""
-            
+
         if command[0] not in classes:
             print("** class doesn't exist **")
             return""
@@ -113,7 +112,7 @@ class HBNBCommand(cmd.Cmd):
                 command[3] = command[3].strip('"')
                 try:
                     command[3] = int(command[3])
-                except:
+                except Exception:
                     pass
                 setattr(val, command[2], command[3])
                 storage.save()
@@ -139,8 +138,6 @@ class HBNBCommand(cmd.Cmd):
                 return""
         print("** no instance found **")
 
-if __name__ == '__main__':
-    HBNBCommand().cmdloop()        
 
-    
-        
+if __name__ == '__main__':
+    HBNBCommand().cmdloop()
