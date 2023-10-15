@@ -133,7 +133,7 @@ class HBNBCommand(cmd.Cmd):
             return""
         for key, val in storage.all().items():
             if command[1] == val.id:
-                del storage.all()[k]
+                del storage.all()[key]
                 storage.save()
                 return""
         print("** no instance found **")
