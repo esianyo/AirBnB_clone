@@ -5,20 +5,21 @@ from models import storage
 from models.base_model import BaseModel
 
 
-"""Module handling city
+"""_summary_
 """
 
-class City(BaseModel):
+
+class Review(BaseModel):
     """_summary_
 
     Args:
         BaseModel (_type_): _description_
     """
+    place_id = ""
+    user_id = ""
+    texrt = ""
 
-    state_id = ""
-    name = ""
-
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         """_summary_
         """
         if len(kwargs) > 0:
