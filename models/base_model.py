@@ -1,15 +1,10 @@
 #!/usr/bin/python3
-"""Creates a class called BaseModel"""
+""" creates the base model for airbnb project"""
+
 
 from datetime import datetime
-from uuid import uuid4
-
-
-"""Contains all common modules for the AirBnB clone project
-
-    Returns:
-        _type_: string format
-"""
+from models import storage
+import uuid
 
 
 class BaseModel:
@@ -17,15 +12,21 @@ class BaseModel:
     contains all public instance attributes that will be access by all methods.
     """
 
+    def __init__(self, *args, **kwargs):
+        """initializing public attributes for id, date, and time"""
+        if len(kwargs) != 0:
+            self.__dict__ = kwargs
+            self.created_at = datetime.strptime(kwargs.get("created_at"),
+                                                "%Y-%m-%dT%H:%M:%S.%f")
+        else:
+            self.id = str(uuid.uuid1())
+            self.created_at = datetime.now()
+            storage.new(self)
 
-"""
-def __init__(self):
-initializing public attributes for id, date, and time
-self.id = str(uuid4())
-self.created_at = datetime.now()
-self.updated_at = datetime.now()
-models.storage.new(self)
-"""
+    def save(self):
+        """ updates date and time after changes have been made"""
+        self.updated_at = datetime.now()
+        storage.save()
 
     def __str__(self):
         """string representation of name and id values
@@ -33,38 +34,16 @@ models.storage.new(self)
         Returns:
             str: paired values in dictionary format
         """
-        return "{}".format(self.__dict__)
+        return ("[{}] ({}) {}".format(self.__class__.__name__,
+                                      self.id, self.__dict__))
 
-    def save(self):
-        """ updates date and time after changes have been made"""
-        self.update_at = datetime.now()
-
-    def to_dict(self):
-        """ returns date and time in isoformat"""
-        toDict = {}
-
-        toDict["__class__"] = self.__class__.__name__
-
-        for key, val in self.__dict__.items():
-            if isinstance(val, datetime):
-                toDict[key] = val.isoformat()
-            else:
-                toDict[key] = val
-        return toDict
-
-    def __init__(self, **kwargs):
-        if kwargs:
-            del kwargs["__class__"]
-            for key, val in kwargs.items():
-                if key == "created_at" or key == "updated_at":
-                    dtm_obj = datetime.strptime(val, "%Y-%m-%dT%H:%M:%S.%f")
-                    setattr(self, key, dtm_obj)
-                else:
-                    setattr(self, key, val)
-        else:
-            self.id = str(uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-
-    def __str__(self):
-        return "\n".join(f"{key}: {val}" for key, val in self.__dict__.items())
+    def to_json(self):
+        """returns values in json format"""
+        new_dict = self.__dict__.copy()
+        for key, value in new_dict.items():
+            if isinstance(value, (datetime, uuid.UUID, tuple, set)):
+                if type(value) is datetime:
+                    value = value.isoformat()
+                new_dict.update({key: str(value)})
+        new_dict['__class__'] = str(self.__class__.__name__)
+        return new_dict

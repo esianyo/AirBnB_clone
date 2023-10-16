@@ -1,63 +1,60 @@
 #!/usr/bin/python3
-""" creates a class called filestorage"""
+"""Type module FileStorage"""
 
-import models
 import json
-from models.base_model import BaseModel
-from models.user import User
-from models.city import City
-from models.place import Place
-from models.state import State
-from models.amenity import Amenity
-from models.review import Review
-
-classes = {'BaseModel': BaseModel, 'User': User, 'Place': Place,
-           'State': State, 'City': City, 'Amenity': Amenity,
-           'Review': Review}
+import uuid
 
 
 class FileStorage:
-    __file_path = "file.json"
+    """Type class File Storage"""
+    __file_path = "./file.json"
     __objects = {}
 
+    def all(self):
+        """Type method all"""
+        return self.reload()
 
-def all(self):
-    """
-    public method that returns dictionary objects
-    """
-    return self.__objects
+    def new(self, obj):
+        """Type method new"""
+        from models.base_model import BaseModel
+        import uuid
 
+        class_name = str(obj.__class__.__name__)
+        obj_id = str(obj.id)
+        obj_str = class_name + "." + obj_id
+        FileStorage.__objects[obj_str] = obj
 
-def new(self, obj):
-    """
-    public methods that sets value in dictionary object
+    def save(self):
+        """Type method save"""
+        from models.base_model import BaseModel
+        new_dict = {}
 
-    Args:
-        obj (_type_): value to be set
-    """
-    key = obj.__class__.__name__ + "." + obj.id
-    self.__objects[key] = obj
+        for keys in FileStorage.__objects.keys():
+            new_dict[keys] = (FileStorage.__objects[keys]).to_json()
 
+        with open(self.__file_path, "w", encoding="utf-8") as f:
+            json.dump(new_dict, f)
 
-def save(self):
-    """ method that serializes a dictionary to json file"""
-    objDict = {}
-    for key, val in FileStorage.__objects.items():
-        objDict[key] = val.toDict()
+    def reload(self):
+        """Type method reaload"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.city import City
+        from models.place import Place
+        from models.state import State
+        from models.amenity import Amenity
+        from models.review import Review
 
-    with open(FileStorage.__file_path, "w", encoding="utf-8") as fd:
-        json.dump(objDict, fd)
-
-
-def reload(self):
-    """deserialises json string to dict string"""
-    objDict = None
-    try:
-        with open(FileStorage.__file_path, "r", encoding="utf-8") as fd:
-            objDict = json.load(fd)
-        for key, val in FileStorage.__objects.items():
-            class_name = val["__class__"]
-            class_name = models.classes[class_name]
-            FileStorage.__objects[key] = class_name(**val)
-    except FileNotFoundError:
-        pass
+        classes = {'BaseModel': BaseModel, 'User': User, 'Place': Place,
+                   'State': State, 'City': City, 'Amenity': Amenity,
+                   'Review': Review}
+        try:
+            with open(FileStorage.__file_path,
+                      "r", encoding="utf-8") as f:
+                reloaded = json.load(f)
+                for k, v in reloaded.items():
+                    class_n = classes.get(reloaded[k].get('__class__'))
+                    self.__objects[k] = class_n(**reloaded[k])
+                return self.__objects
+        except:
+            return {}

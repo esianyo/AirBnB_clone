@@ -1,18 +1,17 @@
 #!/usr/bin/python3
-"""program that contains the entry point of the command interpreter"""
+"""console for the airbnb clone program"""
 
 
 import cmd
-import sys
 from models.base_model import BaseModel
-from models import storage
-import json
+from models.__init__ import storage
+from models.user import User
 from models.city import City
 from models.place import Place
 from models.state import State
 from models.amenity import Amenity
 from models.review import Review
-from models.user import User
+
 
 classes = {'BaseModel': BaseModel, 'User': User, 'Place': Place,
            'State': State, 'City': City, 'Amenity': Amenity, 'Review': Review}
@@ -20,122 +19,115 @@ classes = {'BaseModel': BaseModel, 'User': User, 'Place': Place,
 
 class HBNBCommand(cmd.Cmd):
     """ class method for command line entry point"""
-    prompt = "(hbnb) "
+    prompt = '(hbnb) '
 
-    def Quit(self, command):
-        """handles the exit"""
-        return True
+    def do_quit(self, s):
+        """Quit command to exit the program"""
+        exit()
 
-    def Help(self, command):
-        """Handles help.
-        Args:
-            command (string): Command Input
-        """
-        return True
+    def do_EOF(self, s):
+        """Quit command to exit the program"""
+        exit()
 
-    def Eof(self, command):
-        """Handles end of file.
+    def emptyline(self):
+        """an empty line and ENTER should not execute anything"""
+        pass
 
-        Args:
-            command (empty): no command entered
-        """
-        return True
-
-    def Create(self, command):
+    def do_create(self, args):
         """creates and saves new instance of basemodel to json file"""
-        command = command.split()
-        if not command:
+        args = args.split()
+        if args is None:
             print("** class name missing **")
-        elif command[0] not in classes:
+        elif args[0] not in classes:
             print("** class doesn't exist **")
         else:
-            new_instance = classes.get(command[0])()
+            new_instance = classes.get(args[0])()
             print(new_instance.id)
             storage.save()
 
-    def Show(self, command):
+    def do_show(self, args):
         """
         Prints the string representation of an instance
         based on the class name and id
         """
-        command = command.split()
-        if len is not 2:
-            print("** class name missing **")
-        elif command[0] not in classes:
+        args = args.split()
+        if len(args) != 2:
+            print("** instance id missing **")
+        elif args[0] not in classes:
             print("** class doesn't exist **")
         else:
-            for key, val in storage.all().items():
-                if command[1] == val.id:
-                    print(val)
-                    return""
+            for k, v in storage.all().items():
+                if args[1] == v.id:
+                    print(v)
+                    return
             print("** no instance found **")
 
-    def All(self, command):
+    def do_all(self, args):
         """
         string representation of all instances
         based or not on the class name
         """
-        command = command.split()
-        if not command:
-            for key, val in storage.all().items():
-                print(val)
-        elif command[0] not in classes:
+        args = args.split()
+        if not args:
+            for k, v in storage.all().items():
+                print(v)
+        elif args[0] not in classes:
             print("** class doesn't exist **")
         else:
-            for key, val in storage.all().items():
-                if command[0] == val.__class__.__name__:
-                    print(val)
-                    return""
-            print("[]")
+            for k, v in storage.all().items():
+                if args[0] == v.__class__.__name__:
+                    print(v)
+                    return
+            print('[]')
 
-    def Update(self, command):
+    def do_update(self, args):
         """Updates an instance based on the class name and id"""
-        command = command.split()
-        if command is None:
+        args = args.split()
+        if not args:
             print("** class name missing **")
-            return""
-        elif len(command) < 2:
-            print("** class doesn't exist **")
-            return""
-        elif len(command) < 3:
+            return
+        elif len(args) < 2:
+            print("** instance id missing **")
+            return
+        elif len(args) < 3:
             print("** attribute name missing **")
-            return""
-        elif len(command) < 4:
+            return
+        elif len(args) < 4:
             print("** value missing **")
-            return""
+            return
 
-        if command[0] not in classes:
+        if args[0] not in classes:
             print("** class doesn't exist **")
-            return""
-        for key, val in storage.all().items():
-            if command[1] == val.id:
-                command[3] = command[3].strip('"')
+            return
+        for k, v in storage.all().items():
+            if args[1] == v.id:
+                args[3] = args[3].strip('"')
                 try:
-                    command[3] = int(command[3])
-                except Exception:
+                    args[3] = int(args[3])
+                except:
                     pass
-                setattr(val, command[2], command[3])
+                setattr(v, args[2], args[3])
                 storage.save()
-                return""
+                return
             print("** no instance found **")
 
-    def Destroy(self, command):
+    def do_destroy(self, args):
         """ destroys instances for class name and id """
-        command = command.split()
-        if command is None:
+        args = args.split()
+        if not args:
             print("** class name missing **")
-            return""
-        elif len(command) < 2:
+            return
+        elif len(args) < 2:
             print("** instance id missing **")
-            return""
-        if command[0] not in classes:
+            return
+        if args[0] not in classes:
             print("** class doesn't exist **")
-            return""
-        for key, val in storage.all().items():
-            if command[1] == val.id:
-                del storage.all()[key]
+            return
+        for k, v in storage.all().items():
+            if args[1] == v.id:
+                del storage.all()[k]
                 storage.save()
-                return""
+                return
         print("** no instance found **")
 
 
