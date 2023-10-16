@@ -22,7 +22,6 @@ class BaseModel:
             self.id = str(uuid.uuid1())
             self.created_at = datetime.now()
             storage.new(self)
-        
 
     def save(self):
         """ updates date and time after changes have been made"""
@@ -48,7 +47,7 @@ class BaseModel:
                 new_dict.update({key: str(value)})
         new_dict['__class__'] = str(self.__class__.__name__)
         return new_dict
-    
+
     def to_dict(self):
         '''
             Return dictionary representation of BaseModel class.

@@ -56,5 +56,5 @@ class FileStorage:
                     class_n = classes.get(reloaded[key].get('__class__'))
                     self.__objects[key] = class_n(**reloaded[key])
                 return self.__objects
-        except:
+        except Exception:
             return {}
