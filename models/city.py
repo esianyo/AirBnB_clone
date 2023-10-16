@@ -8,6 +8,7 @@ from models.base_model import BaseModel
 """Module handling city
 """
 
+
 class City(BaseModel):
     """_summary_
 

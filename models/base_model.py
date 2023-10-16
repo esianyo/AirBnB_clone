@@ -13,8 +13,8 @@ class BaseModel:
     """
 
     def __init__(self, *args, **kwargs):
-        """initializing public attributes for id, date, and time"""
-        if len(kwargs) != 0:
+
+        if len(kwargs) is not 0:
             self.__dict__ = kwargs
             self.created_at = datetime.strptime(kwargs.get("created_at"),
                                                 "%Y-%m-%dT%H:%M:%S.%f")
@@ -47,3 +47,16 @@ class BaseModel:
                 new_dict.update({key: str(value)})
         new_dict['__class__'] = str(self.__class__.__name__)
         return new_dict
+
+    def to_dict(self):
+        '''
+            Return dictionary representation of BaseModel class.
+        '''
+        dictFormat = {}
+        dictFormat["__class__"] = self.__class__.__name__
+        for key, value in self.__dict__.items():
+            if isinstance(value, datetime):
+                dictFormat[key] = value.isoformat()
+            else:
+                dictFormat[key] = value
+        return dictFormat

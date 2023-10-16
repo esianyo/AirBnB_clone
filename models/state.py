@@ -9,6 +9,7 @@ from models.base_model import BaseModel
 Module handling state
 """
 
+
 class State(BaseModel):
     """_summary_
 
