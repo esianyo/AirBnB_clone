@@ -28,9 +28,12 @@ class BaseModel:
                                                      "%Y-%m-%dT%H:%M:%S.%f")
             kwargs["updated_at"] = datetime.strptime(kwargs["updated_at"],
                                                      "%Y-%m-%dT%H:%M:%S.%f")
-            for key, val in kwargs.items():
-                if "__class__" not in key:
-                    setattr(self, key, val)
+            for key, value in kwargs.items():
+                if key == "created_at" or key == "updated_at":
+                    dtm_obj = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+                    setattr(self, key, dtm_obj)
+                else:
+                    setattr(self, key, value)
 
 
     def save(self):
@@ -44,8 +47,7 @@ class BaseModel:
         Returns:
             str: paired values in dictionary format
         """
-        return ("[{}] ({}) {}".format(self.__class__.__name__,
-                                      self.id, self.__dict__))
+        return "\n".join([f"{key}: {value}" for key, value in self.__dict__.items()])
 
     def to_json(self):
         """returns values in json format"""
@@ -57,3 +59,12 @@ class BaseModel:
                 new_dict.update({key: str(value)})
         new_dict['__class__'] = str(self.__class__.__name__)
         return new_dict
+    
+    def to_dict(self):
+        '''
+            Return dictionary representation of BaseModel class.
+        '''
+        cp_dct = dict(self.__dict__)
+        cp_dct['__class__'] = self.__class__.__name__
+        cp_dct['updated_at'] = self.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%f")
+        cp_dct['created_at'] = self.created_at.strftime("%Y-%m-%dT%H:%M:%S.%f")

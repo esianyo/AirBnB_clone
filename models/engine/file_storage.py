@@ -52,9 +52,9 @@ class FileStorage:
             with open(FileStorage.__file_path,
                       "r", encoding="utf-8") as f:
                 reloaded = json.load(f)
-                for k, v in reloaded.items():
-                    class_n = classes.get(reloaded[k].get('__class__'))
-                    self.__objects[k] = class_n(**reloaded[k])
+                for key, value in reloaded.items():
+                    class_n = classes.get(reloaded[key].get('__class__'))
+                    self.__objects[key] = class_n(**reloaded[key])
                 return self.__objects
         except:
             return {}
