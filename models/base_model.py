@@ -3,7 +3,7 @@
 
 from datetime import datetime
 from uuid import uuid4
-import models
+
 
 """Contains all common modules for the AirBnB clone project
 
@@ -17,12 +17,15 @@ class BaseModel:
     contains all public instance attributes that will be access by all methods.
     """
 
-    def __init__(self):
-        """ initializing public attributes for id, date, and time"""
-        self.id = str(uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
-        models.storage.new(self)
+
+"""
+def __init__(self):
+initializing public attributes for id, date, and time
+self.id = str(uuid4())
+self.created_at = datetime.now()
+self.updated_at = datetime.now()
+models.storage.new(self)
+"""
 
     def __str__(self):
         """string representation of name and id values
@@ -34,7 +37,7 @@ class BaseModel:
 
     def save(self):
         """ updates date and time after changes have been made"""
-        update_at = datetime.now()
+        self.update_at = datetime.now()
 
     def to_dict(self):
         """ returns date and time in isoformat"""
@@ -56,10 +59,8 @@ class BaseModel:
                 if key == "created_at" or key == "updated_at":
                     dtm_obj = datetime.strptime(val, "%Y-%m-%dT%H:%M:%S.%f")
                     setattr(self, key, dtm_obj)
-
                 else:
                     setattr(self, key, val)
-
         else:
             self.id = str(uuid4())
             self.created_at = datetime.now()
