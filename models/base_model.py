@@ -64,7 +64,11 @@ class BaseModel:
         '''
             Return dictionary representation of BaseModel class.
         '''
-        cp_dct = dict(self.__dict__)
-        cp_dct['__class__'] = self.__class__.__name__
-        cp_dct['updated_at'] = self.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%f")
-        cp_dct['created_at'] = self.created_at.strftime("%Y-%m-%dT%H:%M:%S.%f")
+        dictFormat = {}
+        dictFormat["__class__"] = self.__class__.__name__
+        for key, value in self.__dict__.items():
+            if isinstance(value, datetime):
+                dictFormat[key] = value.isoformat()
+            else:
+                dictFormat[key] = value
+        return dictFormat
