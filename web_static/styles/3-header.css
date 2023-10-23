@@ -1,21 +1,15 @@
 /* styles/3-header.css */
 header {
-    background-color: #FF0000; /* Red background color */
-    color: white;
+    background-color: white;
+    border-bottom: 1px #cccccc solid;
     height: 70px;
     width: 100%;
-    border-bottom: 1px solid #CCCCCC;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.header-content {
-    margin-left: 20px;
-}
-
-.logo {
-    vertical-align: middle;
-}
-
-/* Add other header styles here if needed */
+  }
+  
+  .logo {
+    margin-right: auto;
+    width: 150px;
+    height: 70px;
+    background: url('../images/logo.png') center no-repeat;
+    padding-left: 20px;
+  }
